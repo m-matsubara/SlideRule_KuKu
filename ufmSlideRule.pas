@@ -6,6 +6,10 @@ uses
   Windows, SysUtils, Graphics, Forms,
   StdCtrls, ExtCtrls, Classes, Dialogs, Controls, Printers;
 
+const
+  VERSION = 'Version 0.9.0';
+  COPYRIGHT = 'Copyright © 2020 まつばらまさかず';
+
 type
   TfrmSlideRule = class(TForm)
     Panel1: TPanel;
@@ -48,54 +52,52 @@ begin
   Canvas.Pen.Width := 3;
 
   //  のりしろ
-  Canvas.MoveTo(round( 300 * rUnit), round(500 * rUnit));
-  Canvas.LineTo(round( 500 * rUnit), round(100 * rUnit));
+  Canvas.MoveTo(round( 600 * rUnit), round(500 * rUnit));
+  Canvas.LineTo(round( 800 * rUnit), round(100 * rUnit));
   Canvas.LineTo(round(9500 * rUnit), round(100 * rUnit));
   Canvas.LineTo(round(9700 * rUnit), round(500 * rUnit));
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDot;
-  Canvas.LineTo(round( 300 * rUnit), round(500 * rUnit));
+  Canvas.LineTo(round( 600 * rUnit), round(500 * rUnit));
   Canvas.Pen.Style := psSolid;
 
   //  外枠
   Canvas.Pen.Width := 3;
-  Canvas.MoveTo(round(  300 * rUnit), round( 500 * rUnit));
-  Canvas.LineTo(round(  300 * rUnit), round(4540 * rUnit));
+  Canvas.MoveTo(round(  600 * rUnit), round( 500 * rUnit));
+  Canvas.LineTo(round(  600 * rUnit), round(4540 * rUnit));
   Canvas.LineTo(round( 9700 * rUnit), round(4540 * rUnit));
-//  Canvas.LineTo(round( 9900 * rUnit), round( 500 * rUnit));
   Canvas.LineTo(round( 9700 * rUnit), round(3440 * rUnit));
-  Canvas.LineTo(round( 9200 * rUnit), round(2520 * rUnit));
   Canvas.LineTo(round( 9700 * rUnit), round(1600 * rUnit));
   Canvas.LineTo(round( 9700 * rUnit), round( 500 * rUnit));
-
 
   //  折り目
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDot;
-  Canvas.MoveTo(round(  300 * rUnit), round(2520 * rUnit));
+  Canvas.MoveTo(round(  600 * rUnit), round(2520 * rUnit));
   Canvas.LineTo(round( 9200 * rUnit), round(2520 * rUnit));
+  Canvas.LineTo(round( 9700 * rUnit), round(2520 * rUnit));
   Canvas.Pen.Style := psSolid;
 
   //  窓
   Canvas.Pen.Width := 3;
-  Canvas.Rectangle(round(1000 * rUnit), round(801 * rUnit), round(9100 * rUnit), round(1649 * rUnit));
+  Canvas.Rectangle(round(1300 * rUnit), round(1001 * rUnit), round(5550 * rUnit), round(1649 * rUnit));
   Canvas.Pen.Width := 1;
 
   if (bDebug) then
     Canvas.Rectangle(round(1000 * rUnit), round((4100 + 800) * rUnit), round(9500 * rUnit), round((4100 + 1650) * rUnit));
 
 
-  sStr := '九九けいさんじゃく 2020 Version 1.0.0 (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) Copyright © 2020 まつばらまさかず';
+  // 基準位置
+  nXBase := Round(1500 * rUnit);
+
+  sStr := '九九けいさんじゃく 2020 (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
   Canvas.Font.Color := clBlack;
 //  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
-  Canvas.TextOut(round(9100 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
+  Canvas.TextOut(round(9600 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
 //  Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
 
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(500 * rUnit), round(1250 * rUnit), 'こたえ');
-
-  // 基準位置
-  nXBase := Round(1200 * rUnit);
+  Canvas.TextOut(round(800 * rUnit), round(1250 * rUnit), 'こたえ');
 
   // 左上の「▼ かけられるかず」
   nX := nXBase;
@@ -104,23 +106,23 @@ begin
   Canvas.Pen.Width := 1;
   for nIdx := (nX - round(25 * rUnit)) to (nX + round(25 * rUnit)) do
   begin
-    Canvas.MoveTo(nX, round(800 * rUnit));
-    Canvas.LineTo(nIdx, round(700 * rUnit));
+    Canvas.MoveTo(nX, round(1000 * rUnit));
+    Canvas.LineTo(nIdx, round(900 * rUnit));
   end;
   sStr := 'かけられるかず';
-  Canvas.TextOut(nX - round(25 * rUnit), round(580 * rUnit), sStr);
+  Canvas.TextOut(nX - round(25 * rUnit), round(760 * rUnit), sStr);
 
 //***************************************************************
 
   // かける数
   Canvas.Font.Color := clMaroon;
-  Canvas.TextOut(round(500 * rUnit), round(1800 * rUnit), 'かけるかず');
+  Canvas.TextOut(round(800 * rUnit), round(1800 * rUnit), 'かけるかず');
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 1;
   nIdx := 1;
   while (nIdx <= 9) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     Canvas.MoveTo(nX, round(1650 * rUnit));
     Canvas.LineTo(nX, round(1780 * rUnit));
 
@@ -135,8 +137,8 @@ begin
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 3;
   Canvas.MoveTo(round( 300 * rUnit), round(4600 * rUnit));
-  Canvas.LineTo(round( 300 * rUnit), round(5600 * rUnit));
-  Canvas.LineTo(round( 900 * rUnit), round(6570 * rUnit));
+  Canvas.LineTo(round( 300 * rUnit), round(6270 * rUnit));
+  Canvas.LineTo(round( 600 * rUnit), round(6570 * rUnit));
 //  Canvas.LineTo(round( 100 * rUnit), round(6600 * rUnit));
   Canvas.LineTo(round(9700 * rUnit), round(6570 * rUnit));
   Canvas.LineTo(round(9700 * rUnit), round(4600 * rUnit));
@@ -149,11 +151,9 @@ begin
   nIdx := 1;
   while (nIdx <= 9) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
-    Canvas.MoveTo(nX, round(4740 * rUnit));
-    Canvas.LineTo(nX, round(5000 * rUnit));
-    sStr := IntToStr(nIdx);
-    Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5030 * rUnit), sStr);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
+    Canvas.MoveTo(nX, round(4940 * rUnit));
+    Canvas.LineTo(nX, round(5300 * rUnit));
     Inc(nIdx, 1);
   end;
 
@@ -164,7 +164,7 @@ begin
   nIdx := 1;
   while (nIdx <= 81) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     Canvas.MoveTo(nX, round(5900 * rUnit));
     if (nIdx mod 5 = 0) then
       Canvas.LineTo(nX, round(5550 * rUnit))
@@ -176,7 +176,7 @@ begin
   nIdx := 10;
   while (nIdx <= 80) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     Canvas.MoveTo(nX, round(5900 * rUnit));
     Canvas.LineTo(nX, round(5500 * rUnit));
     Inc(nIdx, 10);
@@ -185,7 +185,7 @@ begin
   nIdx := 1;
   while (nIdx <= 9) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     sStr := IntToStr(nIdx);
     Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5350 * rUnit), sStr);
     Inc(nIdx, 1);
@@ -193,17 +193,12 @@ begin
   nIdx := 10;
   while (nIdx <= 80) do
   begin
-    nX := Round(1200 * rUnit + log10(nIdx) * 4000 * rUnit);
+    nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     sStr := IntToStr(nIdx);
     Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5350 * rUnit), sStr);
     Inc(nIdx, 10);
   end;
 
-  //「かけられるかず」と「こたえ」を区切る線
-  Canvas.Pen.Color := clBlack;
-  Canvas.Pen.Width := 1;
-  Canvas.MoveTo(round(1100 * rUnit), round(5210 * rUnit));
-  Canvas.LineTo(round(9000 * rUnit), round(5210 * rUnit));
 end;
 
 
@@ -217,6 +212,8 @@ end;
 
 procedure TfrmSlideRule.FormCreate(Sender: TObject);
 begin
+  Self.Caption := '九九けいさんじゃく 2020 (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+
   Image1.Align := alClient;
   FormResize(Sender);
 end;
