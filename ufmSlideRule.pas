@@ -7,8 +7,11 @@ uses
   StdCtrls, ExtCtrls, Classes, Dialogs, Controls, Printers;
 
 const
+  APPLICATION_NAME = '九九 計算じゃく';
   VERSION = 'Version 0.9.0';
   COPYRIGHT = 'Copyright © 2020 まつばらまさかず';
+
+  FONT_NAME = 'UD デジタル 教科書体 N-R';
 
 type
   TfrmSlideRule = class(TForm)
@@ -44,8 +47,10 @@ var
   rUnit: Extended;
   nXBase: Integer;  // 基準位置
 begin
+
   rUnit := nWidth / 10000;
 
+  Canvas.Font.Name := FONT_NAME;
   Canvas.Font.Height := round(130 * rUnit);
 
   Canvas.Pen.Color := clBlack;
@@ -57,7 +62,7 @@ begin
   Canvas.LineTo(round(9500 * rUnit), round(100 * rUnit));
   Canvas.LineTo(round(9700 * rUnit), round(500 * rUnit));
   Canvas.Pen.Width := 1;
-  Canvas.Pen.Style := psDot;
+  Canvas.Pen.Style := psDash;
   Canvas.LineTo(round( 600 * rUnit), round(500 * rUnit));
   Canvas.Pen.Style := psSolid;
 
@@ -72,7 +77,7 @@ begin
 
   //  折り目
   Canvas.Pen.Width := 1;
-  Canvas.Pen.Style := psDot;
+  Canvas.Pen.Style := psDash;
   Canvas.MoveTo(round(  600 * rUnit), round(2520 * rUnit));
   Canvas.LineTo(round( 9200 * rUnit), round(2520 * rUnit));
   Canvas.LineTo(round( 9700 * rUnit), round(2520 * rUnit));
@@ -80,7 +85,7 @@ begin
 
   //  窓
   Canvas.Pen.Width := 3;
-  Canvas.Rectangle(round(1300 * rUnit), round(1001 * rUnit), round(5550 * rUnit), round(1649 * rUnit));
+  Canvas.Rectangle(round(1300 * rUnit), round(1001 * rUnit), round(5650 * rUnit), round(1649 * rUnit));
   Canvas.Pen.Width := 1;
 
   if (bDebug) then
@@ -90,14 +95,14 @@ begin
   // 基準位置
   nXBase := Round(1500 * rUnit);
 
-  sStr := '九九けいさんじゃく 2020 (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+  sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
   Canvas.Font.Color := clBlack;
 //  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
   Canvas.TextOut(round(9600 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
 //  Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
 
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(800 * rUnit), round(1250 * rUnit), 'こたえ');
+  Canvas.TextOut(round(800 * rUnit), round(1250 * rUnit), '答え');
 
   // 左上の「▼ かけられるかず」
   nX := nXBase;
@@ -109,14 +114,14 @@ begin
     Canvas.MoveTo(nX, round(1000 * rUnit));
     Canvas.LineTo(nIdx, round(900 * rUnit));
   end;
-  sStr := 'かけられるかず';
+  sStr := 'かけられる数';
   Canvas.TextOut(nX - round(25 * rUnit), round(760 * rUnit), sStr);
 
 //***************************************************************
 
   // かける数
   Canvas.Font.Color := clMaroon;
-  Canvas.TextOut(round(800 * rUnit), round(1800 * rUnit), 'かけるかず');
+  Canvas.TextOut(round(800 * rUnit), round(1800 * rUnit), 'かける数');
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 1;
   nIdx := 1;
@@ -131,7 +136,6 @@ begin
 
     Inc(nIdx, 1);
   end;
-
 
   //  内側スライダ（枠）
   Canvas.Pen.Color := clBlack;
@@ -198,7 +202,6 @@ begin
     Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5350 * rUnit), sStr);
     Inc(nIdx, 10);
   end;
-
 end;
 
 
@@ -212,7 +215,7 @@ end;
 
 procedure TfrmSlideRule.FormCreate(Sender: TObject);
 begin
-  Self.Caption := '九九けいさんじゃく 2020 (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+  Self.Caption := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
 
   Image1.Align := alClient;
   FormResize(Sender);
