@@ -57,31 +57,31 @@ begin
   Canvas.Pen.Width := 3;
 
   //  のりしろ
-  Canvas.MoveTo(round( 600 * rUnit), round(500 * rUnit));
-  Canvas.LineTo(round(1000 * rUnit), round(100 * rUnit));
-  Canvas.LineTo(round(8900 * rUnit), round(100 * rUnit));
-  Canvas.LineTo(round(9300 * rUnit), round(500 * rUnit));
+  Canvas.MoveTo(round( 600 * rUnit), round(600 * rUnit));
+  Canvas.LineTo(round(1000 * rUnit), round(200 * rUnit));
+  Canvas.LineTo(round(8900 * rUnit), round(200 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round(600 * rUnit));
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDash;
-  Canvas.LineTo(round( 600 * rUnit), round(500 * rUnit));
+  Canvas.LineTo(round( 600 * rUnit), round(600 * rUnit));
   Canvas.Pen.Style := psSolid;
 
   //  外枠
   Canvas.Pen.Width := 3;
-  Canvas.MoveTo(round(  600 * rUnit), round( 500 * rUnit));
-  Canvas.LineTo(round(  600 * rUnit), round(4540 * rUnit)); // 左縦線
-  Canvas.LineTo(round( 9300 * rUnit), round(4540 * rUnit)); // 底横線
+  Canvas.MoveTo(round(  600 * rUnit), round( 600 * rUnit));
+  Canvas.LineTo(round(  600 * rUnit), round(4440 * rUnit)); // 左縦線
+  Canvas.LineTo(round( 9300 * rUnit), round(4440 * rUnit)); // 底横線
   Canvas.LineTo(round( 9300 * rUnit), round(2520 * rUnit)); // 右縦線（下半分）
   Canvas.LineTo(round( 9700 * rUnit), round(2120 * rUnit)); // のりしろ（右）↗
-  Canvas.LineTo(round( 9700 * rUnit), round( 900 * rUnit)); // のりしろ（右）↑
-  Canvas.LineTo(round( 9300 * rUnit), round( 500 * rUnit)); // のりしろ（右）↖
+  Canvas.LineTo(round( 9700 * rUnit), round(1000 * rUnit)); // のりしろ（右）↑
+  Canvas.LineTo(round( 9300 * rUnit), round( 600 * rUnit)); // のりしろ（右）↖
 
   //  折り目
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDash;
   Canvas.MoveTo(round(  600 * rUnit), round(2520 * rUnit));
   Canvas.LineTo(round( 9300 * rUnit), round(2520 * rUnit));
-  Canvas.LineTo(round( 9300 * rUnit), round( 500 * rUnit));
+  Canvas.LineTo(round( 9300 * rUnit), round( 600 * rUnit));
   Canvas.Pen.Style := psSolid;
 
   //  窓
@@ -142,10 +142,10 @@ begin
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 3;
   Canvas.MoveTo(round( 300 * rUnit), round(4600 * rUnit));
-  Canvas.LineTo(round( 300 * rUnit), round(6270 * rUnit));
-  Canvas.LineTo(round( 600 * rUnit), round(6570 * rUnit));
+  Canvas.LineTo(round( 300 * rUnit), round(6170 * rUnit));
+  Canvas.LineTo(round( 600 * rUnit), round(6470 * rUnit));
 //  Canvas.LineTo(round( 100 * rUnit), round(6600 * rUnit));
-  Canvas.LineTo(round(9300 * rUnit), round(6570 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round(6470 * rUnit));
   Canvas.LineTo(round(9300 * rUnit), round(4600 * rUnit));
   Canvas.LineTo(round( 300 * rUnit), round(4600 * rUnit));
 
