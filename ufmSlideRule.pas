@@ -58,9 +58,9 @@ begin
 
   //  のりしろ
   Canvas.MoveTo(round( 600 * rUnit), round(500 * rUnit));
-  Canvas.LineTo(round( 800 * rUnit), round(100 * rUnit));
-  Canvas.LineTo(round(9500 * rUnit), round(100 * rUnit));
-  Canvas.LineTo(round(9700 * rUnit), round(500 * rUnit));
+  Canvas.LineTo(round(1000 * rUnit), round(100 * rUnit));
+  Canvas.LineTo(round(8900 * rUnit), round(100 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round(500 * rUnit));
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDash;
   Canvas.LineTo(round( 600 * rUnit), round(500 * rUnit));
@@ -69,18 +69,19 @@ begin
   //  外枠
   Canvas.Pen.Width := 3;
   Canvas.MoveTo(round(  600 * rUnit), round( 500 * rUnit));
-  Canvas.LineTo(round(  600 * rUnit), round(4540 * rUnit));
-  Canvas.LineTo(round( 9700 * rUnit), round(4540 * rUnit));
-  Canvas.LineTo(round( 9700 * rUnit), round(3440 * rUnit));
-  Canvas.LineTo(round( 9700 * rUnit), round(1600 * rUnit));
-  Canvas.LineTo(round( 9700 * rUnit), round( 500 * rUnit));
+  Canvas.LineTo(round(  600 * rUnit), round(4540 * rUnit)); // 左縦線
+  Canvas.LineTo(round( 9300 * rUnit), round(4540 * rUnit)); // 底横線
+  Canvas.LineTo(round( 9300 * rUnit), round(2520 * rUnit)); // 右縦線（下半分）
+  Canvas.LineTo(round( 9700 * rUnit), round(2120 * rUnit)); // のりしろ（右）↗
+  Canvas.LineTo(round( 9700 * rUnit), round( 900 * rUnit)); // のりしろ（右）↑
+  Canvas.LineTo(round( 9300 * rUnit), round( 500 * rUnit)); // のりしろ（右）↖
 
   //  折り目
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDash;
   Canvas.MoveTo(round(  600 * rUnit), round(2520 * rUnit));
-  Canvas.LineTo(round( 9200 * rUnit), round(2520 * rUnit));
-  Canvas.LineTo(round( 9700 * rUnit), round(2520 * rUnit));
+  Canvas.LineTo(round( 9300 * rUnit), round(2520 * rUnit));
+  Canvas.LineTo(round( 9300 * rUnit), round( 500 * rUnit));
   Canvas.Pen.Style := psSolid;
 
   //  窓
@@ -98,7 +99,7 @@ begin
   sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
   Canvas.Font.Color := clBlack;
 //  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
-  Canvas.TextOut(round(9600 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
+  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
 //  Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
 
   Canvas.Font.Color := clBlack;
@@ -144,8 +145,8 @@ begin
   Canvas.LineTo(round( 300 * rUnit), round(6270 * rUnit));
   Canvas.LineTo(round( 600 * rUnit), round(6570 * rUnit));
 //  Canvas.LineTo(round( 100 * rUnit), round(6600 * rUnit));
-  Canvas.LineTo(round(9700 * rUnit), round(6570 * rUnit));
-  Canvas.LineTo(round(9700 * rUnit), round(4600 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round(6570 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round(4600 * rUnit));
   Canvas.LineTo(round( 300 * rUnit), round(4600 * rUnit));
 
   // スライダ内かけられるかず
