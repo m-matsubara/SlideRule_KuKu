@@ -13,6 +13,22 @@ const
 
   FONT_NAME = 'UD デジタル 教科書体 N-R';
 
+
+  //  カラーユニバーサルデザイン　推奨配色カラー（第三版）より
+  //  http://jfly.iam.u-tokyo.ac.jp/colorset/
+  //  アクセントカラー
+  //  文字・サイン・線など、小さいものを塗りわけるのに使えるような、彩度の高い色です。
+  cluRed     = $000028FF; //  赤        ：色弱の人が赤と感じやすいように、オレンジ寄りの赤にしています。
+  cluYellow  = $0000F5FF; //  黄色      ：白内障の人が白と区別しやすい、濃い黄色にしています。
+  cluGreen   = $006BA135; //  緑        ：色弱の人が黄色や赤と間違えやすい黄色みの強い緑を避け、青みが強い緑を選んでいます。ただし青緑まで行ってしまうと、今度はグレーや紫と混同するので、それよりも緑に近い微妙な位置にしています。
+  cluBlue    = $00FF4100; //  青        ：白内障の人が黒と間違えないよう、少し明るめになっています。
+  cluSky     = $00FFCC66; //  空色      ：青との明度差を確保するため、少し明るめになっています。
+  cluPink    = $00A099FF; //  ピンク    ：青みのピンクだと空色と混同することがあるので、やや黄みに寄せたピンクにしています。
+  cluOrange  = $000099FF; //  オレンジ  ：赤がオレンジ寄りになっているのとバランスを取るため、少し黄色寄りのオレンジになっています。
+  cluPurple  = $0079009A; //  紫        ：青紫は青と間違えやすいので、赤みの強い紫にしています。
+  cluBrown   = $00003366; //  茶        ：明るめの茶色は赤や緑と混同することがあるので、暗めの色にしています。（ただし黒と間違えることがあるので注意が必要です。）
+
+
 type
   TfrmSlideRule = class(TForm)
     Panel1: TPanel;
@@ -44,30 +60,36 @@ var
   nIdx: Integer;
   nX: Integer;
   sStr: String;
-  rUnit: Extended;
-  nXBase: Integer;  // 基準位置
+  rUnit: Extended;        // 描画に使うサイズの基準値
+  nXBase: Integer;        // 目盛りの基準位置
+  nCutLineWidth: Integer; // 切り取り線の幅
+  xPoints: array[0..2] of TPoint;
 begin
-
+  // 描画に使うサイズの基準値
   rUnit := nWidth / 10000;
+  // 目盛りの基準位置
+  nXBase := Round(1500 * rUnit);
+  // 切り取り線の幅
+  nCutLineWidth := nWidth div 700;
+  if (nCutLineWidth < 3) then
+    nCutLineWidth := 3;
 
   Canvas.Font.Name := FONT_NAME;
   Canvas.Font.Height := round(130 * rUnit);
-
   Canvas.Pen.Color := clBlack;
-  Canvas.Pen.Width := 3;
+  Canvas.Pen.Width := nCutLineWidth;
+  Canvas.Brush.Style := bsClear;
+
+//* 本体の描画 *****************************************************************
 
   //  のりしろ
   Canvas.MoveTo(round( 600 * rUnit), round(600 * rUnit));
-  Canvas.LineTo(round(1000 * rUnit), round(200 * rUnit));
-  Canvas.LineTo(round(8900 * rUnit), round(200 * rUnit));
-  Canvas.LineTo(round(9300 * rUnit), round(600 * rUnit));
-  Canvas.Pen.Width := 1;
-  Canvas.Pen.Style := psDash;
-  Canvas.LineTo(round( 600 * rUnit), round(600 * rUnit));
-  Canvas.Pen.Style := psSolid;
+  Canvas.LineTo(round(1000 * rUnit), round(200 * rUnit));   // のりしろ（上）↗
+  Canvas.LineTo(round(8900 * rUnit), round(200 * rUnit));   // のりしろ（上）→
+  Canvas.LineTo(round(9300 * rUnit), round(600 * rUnit));   // のりしろ（上）↘
 
   //  外枠
-  Canvas.Pen.Width := 3;
+  Canvas.Pen.Width := nCutLineWidth;
   Canvas.MoveTo(round(  600 * rUnit), round( 600 * rUnit));
   Canvas.LineTo(round(  600 * rUnit), round(4440 * rUnit)); // 左縦線
   Canvas.LineTo(round( 9300 * rUnit), round(4440 * rUnit)); // 底横線
@@ -79,59 +101,50 @@ begin
   //  折り目
   Canvas.Pen.Width := 1;
   Canvas.Pen.Style := psDash;
-  Canvas.MoveTo(round(  600 * rUnit), round(2520 * rUnit));
-  Canvas.LineTo(round( 9300 * rUnit), round(2520 * rUnit));
-  Canvas.LineTo(round( 9300 * rUnit), round( 600 * rUnit));
+
+  Canvas.Pen.Width := 1;
+  Canvas.Pen.Style := psDash;
+  Canvas.MoveTo(round( 600 * rUnit), round( 600 * rUnit));
+  Canvas.LineTo(round(9300 * rUnit), round( 600 * rUnit));  // →
+  Canvas.LineTo(round(9300 * rUnit), round(2520 * rUnit));  // ↓
+  Canvas.LineTo(round( 600 * rUnit), round(2520 * rUnit));  // ←
   Canvas.Pen.Style := psSolid;
 
   //  窓
-  Canvas.Pen.Width := 3;
+  Canvas.Pen.Width := nCutLineWidth;
   Canvas.Rectangle(round(1300 * rUnit), round(1001 * rUnit), round(5650 * rUnit), round(1649 * rUnit));
   Canvas.Pen.Width := 1;
 
-  // くみ・なまえ
-  Canvas.Pen.Style := psDot;
-  Canvas.Pen.Width := 1;
-  Canvas.Rectangle(round(6000 * rUnit), round(1800 * rUnit), round(9200 * rUnit), round(2400 * rUnit));
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Width := 1;
+  // 本体右上計算尺名
+  sStr := APPLICATION_NAME;
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(6050 * rUnit), round(1850 * rUnit), 'くみ・なまえ');
-
-
-  if (bDebug) then
-    Canvas.Rectangle(round(1300 * rUnit), round((4100 + 1000) * rUnit), round(5650 * rUnit), round((4100 + 1650) * rUnit));
-
-
-  // 基準位置
-  nXBase := Round(1500 * rUnit);
-
-  sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
-  Canvas.Font.Color := clBlack;
-//  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
   Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(700 * rUnit), sStr);
-//  Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
 
   Canvas.Font.Color := clBlack;
   Canvas.TextOut(round(800 * rUnit), round(1250 * rUnit), '答え');
 
   // 左上の「▼ かけられるかず」
   nX := nXBase;
-  Canvas.Pen.Color := clRed;
-  Canvas.Font.Color := clRed;
+  Canvas.Pen.Color := cluRed;
+  Canvas.Brush.Color := cluRed;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Font.Color := cluRed;
   Canvas.Pen.Width := 1;
-  for nIdx := (nX - round(25 * rUnit)) to (nX + round(25 * rUnit)) do
-  begin
-    Canvas.MoveTo(nX, round(1000 * rUnit));
-    Canvas.LineTo(nIdx, round(900 * rUnit));
-  end;
+  xPoints[0].X := nX;
+  xPoints[0].Y := round(1000 * rUnit);
+  xPoints[1].X := nX - round(25 * rUnit);
+  xPoints[1].Y := round( 900 * rUnit);
+  xPoints[2].X := nX + round(25 * rUnit);
+  xPoints[2].Y := round( 900 * rUnit);
+  Canvas.Polygon(xPoints);
+  Canvas.Pen.Color := clBlack;
+  Canvas.Brush.Color := clWhite;
+  Canvas.Brush.Style := bsClear;
   sStr := 'かけられる数';
   Canvas.TextOut(nX - round(25 * rUnit), round(760 * rUnit), sStr);
 
-//***************************************************************
-
   // かける数
-  Canvas.Font.Color := clMaroon;
+  Canvas.Font.Color := cluBlue;
   Canvas.TextOut(round(800 * rUnit), round(1800 * rUnit), 'かける数');
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 1;
@@ -148,9 +161,18 @@ begin
     Inc(nIdx, 1);
   end;
 
-  //  内側スライダ（枠）
+  // くみ・なまえ
+  Canvas.Font.Color := clBlack;
+  Canvas.TextOut(round(5850 * rUnit), round(2250 * rUnit), '　　　ねん　　　くみ　なまえ');
+  Canvas.Pen.Width := 1;
+  Canvas.RoundRect(round(5800 * rUnit), round(1900 * rUnit), round(9200 * rUnit), round(2400 * rUnit), round(100 * rUnit), round(100 * rUnit));
+  Canvas.Pen.Width := 1;
+
+//* スライダの描画 *************************************************************
+
+  //  枠
   Canvas.Pen.Color := clBlack;
-  Canvas.Pen.Width := 3;
+  Canvas.Pen.Width := nCutLineWidth;
   Canvas.MoveTo(round( 300 * rUnit), round(4600 * rUnit));
   Canvas.LineTo(round( 300 * rUnit), round(6170 * rUnit));
   Canvas.LineTo(round( 600 * rUnit), round(6470 * rUnit));
@@ -159,20 +181,20 @@ begin
   Canvas.LineTo(round(9300 * rUnit), round(4600 * rUnit));
   Canvas.LineTo(round( 300 * rUnit), round(4600 * rUnit));
 
-  // スライダ内かけられるかず
-  Canvas.Font.Color := clRed;
-  Canvas.Pen.Color := clRed;
+  // スライダ内かけられる数の線（赤）
+  Canvas.Font.Color := cluRed;
+  Canvas.Pen.Color := cluRed;
   Canvas.Pen.Width := 1;
   nIdx := 1;
   while (nIdx <= 9) do
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
-    Canvas.MoveTo(nX, round(4940 * rUnit));
-    Canvas.LineTo(nX, round(5300 * rUnit));
+    Canvas.MoveTo(nX, round(4840 * rUnit));
+    Canvas.LineTo(nX, round(5200 * rUnit));
     Inc(nIdx, 1);
   end;
 
-  // スライダ内こたえ
+  // スライダ内答え
   Canvas.Font.Color := clBlack;
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 1;
@@ -180,11 +202,11 @@ begin
   while (nIdx <= 81) do
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
-    Canvas.MoveTo(nX, round(5900 * rUnit));
+    Canvas.MoveTo(nX, round(5800 * rUnit));
     if (nIdx mod 5 = 0) then
-      Canvas.LineTo(nX, round(5550 * rUnit))
+      Canvas.LineTo(nX, round(5450 * rUnit))
     else
-      Canvas.LineTo(nX, round(5650 * rUnit));
+      Canvas.LineTo(nX, round(5550 * rUnit));
     Inc(nIdx, 1);
   end;
   Canvas.Pen.Width := 3;
@@ -192,17 +214,16 @@ begin
   while (nIdx <= 80) do
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
-    Canvas.MoveTo(nX, round(5900 * rUnit));
-    Canvas.LineTo(nX, round(5500 * rUnit));
+    Canvas.MoveTo(nX, round(5800 * rUnit));
+    Canvas.LineTo(nX, round(5400 * rUnit));
     Inc(nIdx, 10);
   end;
-
   nIdx := 1;
   while (nIdx <= 9) do
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     sStr := IntToStr(nIdx);
-    Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5350 * rUnit), sStr);
+    Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5250 * rUnit), sStr);
     Inc(nIdx, 1);
   end;
   nIdx := 10;
@@ -210,9 +231,18 @@ begin
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     sStr := IntToStr(nIdx);
-    Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5350 * rUnit), sStr);
+    Canvas.TextOut(nX - Canvas.TextWidth(sStr) div 2, round(5250 * rUnit), sStr);
     Inc(nIdx, 10);
   end;
+
+  // スライダ右下計算尺名・DPI・バージョン・著作権表示
+  sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+  Canvas.Font.Color := clBlack;
+  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(6270 * rUnit), sStr);
+
+  if (bDebug) then
+    Canvas.Rectangle(round(1300 * rUnit), round((4100 + 1000) * rUnit), round(5650 * rUnit), round((4100 + 1650) * rUnit));
+
 end;
 
 
