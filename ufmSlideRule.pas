@@ -89,8 +89,18 @@ begin
   Canvas.Rectangle(round(1300 * rUnit), round(1001 * rUnit), round(5650 * rUnit), round(1649 * rUnit));
   Canvas.Pen.Width := 1;
 
+  // くみ・なまえ
+  Canvas.Pen.Style := psDot;
+  Canvas.Pen.Width := 1;
+  Canvas.Rectangle(round(6000 * rUnit), round(1800 * rUnit), round(9200 * rUnit), round(2400 * rUnit));
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Width := 1;
+  Canvas.Font.Color := clBlack;
+  Canvas.TextOut(round(6050 * rUnit), round(1850 * rUnit), 'くみ・なまえ');
+
+
   if (bDebug) then
-    Canvas.Rectangle(round(1000 * rUnit), round((4100 + 800) * rUnit), round(9500 * rUnit), round((4100 + 1650) * rUnit));
+    Canvas.Rectangle(round(1300 * rUnit), round((4100 + 1000) * rUnit), round(5650 * rUnit), round((4100 + 1650) * rUnit));
 
 
   // 基準位置
@@ -99,7 +109,7 @@ begin
   sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
   Canvas.Font.Color := clBlack;
 //  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
-  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(2350 * rUnit), sStr);
+  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(700 * rUnit), sStr);
 //  Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
 
   Canvas.Font.Color := clBlack;
