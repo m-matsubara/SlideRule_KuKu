@@ -162,13 +162,22 @@ end;
 procedure CreateSlideRule(Canvas: TCanvas; nWidth: Integer; bDebug: Boolean);
 var
   nIdx: Integer;
+  nIdx2: Integer;
   nX: Integer;
   sStr: String;
   rUnit: Extended;        // 描画に使うサイズの基準値
   nXBase: Integer;        // 目盛りの基準位置
   nCutLineWidth: Integer; // 切り取り線の幅
-  xPoints: array[0..2] of TPoint;
+  xPoints: array[0..2] of TPoint; // ポリゴン描画用
+  bxKuKu: array[1..81] of boolean; // 九九の答えとしてありえる数字か
 begin
+
+  for nIdx := 1 to 81 do
+    bxKuKu[nIdx] := False;
+  for nIdx := 1 to 9 do
+    for nIdx2 := 1 to 9 do
+      bxKuKu[nIdx * nIdx2] := True;
+
   // 描画に使うサイズの基準値
   rUnit := nWidth / 10000;
   // 目盛りの基準位置
@@ -229,10 +238,10 @@ begin
 
   // 左上の「▼ かけられるかず」
   nX := nXBase;
-  Canvas.Pen.Color := cluRed;
-  Canvas.Brush.Color := cluRed;
+  Canvas.Pen.Color := cluBlue;
+  Canvas.Brush.Color := cluBlue;
   Canvas.Brush.Style := bsSolid;
-  Canvas.Font.Color := cluRed;
+  Canvas.Font.Color := cluBlue;
   Canvas.Pen.Width := 1;
   xPoints[0].X := nX;
   xPoints[0].Y := round(1000 * rUnit);
@@ -248,10 +257,10 @@ begin
   RubyTextOut(Canvas, nX - round(25 * rUnit), round(760 * rUnit), sStr);
 
   // かける数
-  Canvas.Font.Color := cluBlue;
+  Canvas.Font.Color := cluRed;
   RubyTextOut(Canvas, round(800 * rUnit), round(1800 * rUnit), 'かける|数|かず');
 
-  Canvas.Pen.Color := clBlack;
+  Canvas.Pen.Color := clRed;
   Canvas.Pen.Width := 1;
   nIdx := 1;
   while (nIdx <= 9) do
@@ -268,7 +277,10 @@ begin
 
   // くみ・なまえ
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(5850 * rUnit), round(2250 * rUnit), '　　　ねん　　　くみ　なまえ');
+  Canvas.Pen.Color := clBlack;
+  sStr := '　　　ねん　　　くみ　なまえ';
+  //sStr := '　　　|年|ねん|　　　　|組|くみ|　　|名前|なまえ|';
+  RubyTextOut(Canvas, round(5850 * rUnit), round(2250 * rUnit), sStr);
   Canvas.Pen.Width := 1;
   Canvas.RoundRect(round(5800 * rUnit), round(1900 * rUnit), round(9200 * rUnit), round(2400 * rUnit), round(100 * rUnit), round(100 * rUnit));
   Canvas.Pen.Width := 1;
@@ -287,8 +299,8 @@ begin
   Canvas.LineTo(round( 300 * rUnit), round(4600 * rUnit));
 
   // スライダ内かけられる数の線（赤）
-  Canvas.Font.Color := cluRed;
-  Canvas.Pen.Color := cluRed;
+  Canvas.Font.Color := cluBlue;
+  Canvas.Pen.Color := cluBlue;
   Canvas.Pen.Width := 1;
   nIdx := 1;
   while (nIdx <= 9) do
@@ -307,6 +319,10 @@ begin
   while (nIdx <= 81) do
   begin
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
+    if (bxKuku[nIdx]) then
+      Canvas.Pen.Color := cluRed
+    else
+      Canvas.Pen.Color := clBlack;
     Canvas.MoveTo(nX, round(5800 * rUnit));
     if (nIdx mod 5 = 0) then
       Canvas.LineTo(nX, round(5450 * rUnit))
@@ -318,6 +334,10 @@ begin
   nIdx := 10;
   while (nIdx <= 80) do
   begin
+    if (bxKuku[nIdx]) then
+      Canvas.Pen.Color := cluRed
+    else
+      Canvas.Pen.Color := clBlack;
     nX := Round(nXBase + log10(nIdx) * 4000 * rUnit);
     Canvas.MoveTo(nX, round(5800 * rUnit));
     Canvas.LineTo(nX, round(5400 * rUnit));
