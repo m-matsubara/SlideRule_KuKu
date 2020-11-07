@@ -7,11 +7,12 @@ uses
   StdCtrls, ExtCtrls, Classes, Dialogs, Controls, Printers;
 
 const
-  APPLICATION_NAME = '九九 計算じゃく';
+  APPLICATION_NAME = '九九 計算尺';
   APPLICATION_NAME_RUBY = '|九九|く　く| |計算尺|けいさんじゃく|';
   VERSION = 'Version 0.9.0';
   COPYRIGHT = 'Copyright © 2020 松原正和';
-  COPYRIGHT_RUBY = 'Copyright © 2020 |松原正和|まつばら まさかず|';
+  // なぜか全角空白を消すと、© の記号が正しく表示できなくなる(2020/11/07)
+  COPYRIGHT_RUBY = 'Copyright © 2020　|松原正和|まつばら まさかず|';
 
   FONT_NAME = 'UD デジタル 教科書体 N-R';
 
@@ -70,6 +71,7 @@ procedure RubyTextOut(Canvas: TCanvas; nX, nY: Integer; sString: String);
 var
   nFontHeight: Integer; // フォント高さ
   ssString: TStrings;   // 対象文字列を"|" で分割したもの（ルビを振らない部分/ルビの対象/ルビ…）
+  sStr: String;
   nIdx: Integer;        // ssString の添え字
   nRubyX: Integer;      // ルビ出力のX座標
   nRubyY: Integer;      // ルビ出力のY座標
@@ -83,21 +85,23 @@ begin
     ssString.StrictDelimiter := True;
     ssString.Delimiter := '|';
     ssString.DelimitedText := sString;
+    ssString.UseLocale := False;
 
     for nIdx := 0 to ssString.Count - 1do
     begin
+      sStr := ssString[nIdx];
       case (nIdx mod 3) of
         0:  // ルビの付かない文字列
           begin
-            nWidth := Canvas.TextWidth(ssString[nIdx]);
-            Canvas.TextOut(nX, nY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(sStr);
+            Canvas.TextOut(nX, nY, sStr);
             Inc(nX, nWidth);
           end;
         1:  // ルビの振られる対象文字列
           begin
             nRubyX := nX;
-            nWidth := Canvas.TextWidth(ssString[nIdx]);
-            Canvas.TextOut(nX, nY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(sStr);
+            Canvas.TextOut(nX, nY, sStr);
             Inc(nX, nWidth);
             nRubyWidth := nWidth;
           end;
@@ -105,8 +109,8 @@ begin
           begin
             // フォントサイズを半分にする
             Canvas.Font.Height := nFontHeight div 2;
-            nWidth := Canvas.TextWidth(ssString[nIdx]);
-            Canvas.TextOut(nRubyX + (nRubyWidth - nWidth) div 2, nRubyY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(sStr);
+            Canvas.TextOut(nRubyX + (nRubyWidth - nWidth) div 2, nRubyY, sStr);
             // フォントサイズを戻す
             Canvas.Font.Height := nFontHeight;
           end;
