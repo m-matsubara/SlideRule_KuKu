@@ -8,8 +8,10 @@ uses
 
 const
   APPLICATION_NAME = '九九 計算じゃく';
+  APPLICATION_NAME_RUBY = '|九九|く　く| |計算尺|けいさんじゃく|';
   VERSION = 'Version 0.9.0';
-  COPYRIGHT = 'Copyright © 2020 まつばらまさかず';
+  COPYRIGHT = 'Copyright © 2020 松原正和';
+  COPYRIGHT_RUBY = 'Copyright © 2020 |松原正和|まつばら まさかず|';
 
   FONT_NAME = 'UD デジタル 教科書体 N-R';
 
@@ -55,16 +57,24 @@ uses
 
 {$R *.DFM}
 
+{
+  簡易的なルビ付き文字列の出力
+    "|"で区切ってルビを振らない部分・ルビの対象・ルビを繰り返して指定する。
+    例)
+      指定文字列: "ルビの付|つ|いた|文字列|もじれつ|"
+      出力結果        つ    もじれつ
+                ルビの付いた文字列
 
-// 簡易的なルビ付き文字列の出力
+}
 procedure RubyTextOut(Canvas: TCanvas; nX, nY: Integer; sString: String);
 var
-  ssString: TStrings;
-  nIdx: Integer;
-  nRubyX: Integer;
-  nRubyY: Integer;
+  nFontHeight: Integer; // フォント高さ
+  ssString: TStrings;   // 対象文字列を"|" で分割したもの（ルビを振らない部分/ルビの対象/ルビ…）
+  nIdx: Integer;        // ssString の添え字
+  nRubyX: Integer;      // ルビ出力のX座標
+  nRubyY: Integer;      // ルビ出力のY座標
+  nRubyWidth: Integer;  // ルビ出力に使える幅
   nWidth: Integer;
-  nFontHeight: Integer;
 begin
   nFontHeight := Canvas.Font.Height;
   nRubyY := nY - Abs((nFontHeight + 1) div 2);  // ルビのY座標は、出力文字列のフォント高さの半分上
@@ -77,24 +87,68 @@ begin
     for nIdx := 0 to ssString.Count - 1do
     begin
       case (nIdx mod 3) of
-        0:
+        0:  // ルビの付かない文字列
           begin
-            Canvas.TextOut(nX, nY, ssString[nIdx]);
             nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Canvas.TextOut(nX, nY, ssString[nIdx]);
             Inc(nX, nWidth);
           end;
-        1:
+        1:  // ルビの振られる対象文字列
           begin
             nRubyX := nX;
-            Canvas.TextOut(nX, nY, ssString[nIdx]);
             nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Canvas.TextOut(nX, nY, ssString[nIdx]);
             Inc(nX, nWidth);
+            nRubyWidth := nWidth;
           end;
-        2:
+        2:  // ルビ
           begin
+            // フォントサイズを半分にする
             Canvas.Font.Height := nFontHeight div 2;
-            Canvas.TextOut(nRubyX, nRubyY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Canvas.TextOut(nRubyX + (nRubyWidth - nWidth) div 2, nRubyY, ssString[nIdx]);
+            // フォントサイズを戻す
             Canvas.Font.Height := nFontHeight;
+          end;
+      end;
+    end;
+  finally
+    FreeAndNil(ssString);
+  end;
+end;
+
+
+{
+  簡易的なルビ付き文字列の出力幅
+}
+function RubyTextWidth(Canvas: TCanvas; sString: String): Integer;
+var
+  ssString: TStrings;   // 対象文字列を"|" で分割したもの（ルビを振らない部分/ルビの対象/ルビ…）
+  nIdx: Integer;        // ssString の添え字
+  nWidth: Integer;
+begin
+  Result := 0;
+  ssString := TStringList.Create;
+  try
+    ssString.StrictDelimiter := True;
+    ssString.Delimiter := '|';
+    ssString.DelimitedText := sString;
+
+    for nIdx := 0 to ssString.Count - 1do
+    begin
+      case (nIdx mod 3) of
+        0:  // ルビの付かない文字列
+          begin
+            nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Inc(Result, nWidth);
+          end;
+        1:  // ルビの振られる対象文字列
+          begin
+            nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Inc(Result, nWidth);
+          end;
+        2:  // ルビ
+          begin
           end;
       end;
     end;
@@ -166,7 +220,7 @@ begin
   Canvas.Pen.Width := 1;
 
   // 本体右上計算尺名
-  sStr := '|九|く||九|く| |計|けい||算|さん||尺|じゃく';
+  sStr := APPLICATION_NAME_RUBY;
   Canvas.Font.Color := clBlack;
   RubyTextOut(Canvas, round(8500 * rUnit), round(700 * rUnit), sStr);
 
@@ -287,10 +341,9 @@ begin
   end;
 
   // スライダ右下計算尺名・DPI・バージョン・著作権表示
-  sStr := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+  sStr := APPLICATION_NAME_RUBY + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT_RUBY;
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(6270 * rUnit), sStr);
-
+  RubyTextOut(Canvas, round(9200 * rUnit) - RubyTextWidth(Canvas, sStr), round(6270 * rUnit), sStr);
   if (bDebug) then
     Canvas.Rectangle(round(1300 * rUnit), round((4100 + 1000) * rUnit), round(5650 * rUnit), round((4100 + 1650) * rUnit));
 
