@@ -55,6 +55,56 @@ uses
 
 {$R *.DFM}
 
+
+// 簡易的なルビ付き文字列の出力
+procedure RubyTextOut(Canvas: TCanvas; nX, nY: Integer; sString: String);
+var
+  ssString: TStrings;
+  nIdx: Integer;
+  nRubyX: Integer;
+  nRubyY: Integer;
+  nWidth: Integer;
+  nFontHeight: Integer;
+begin
+  nFontHeight := Canvas.Font.Height;
+  nRubyY := nY - Abs((nFontHeight + 1) div 2);  // ルビのY座標は、出力文字列のフォント高さの半分上
+  ssString := TStringList.Create;
+  try
+    ssString.StrictDelimiter := True;
+    ssString.Delimiter := '|';
+    ssString.DelimitedText := sString;
+
+    for nIdx := 0 to ssString.Count - 1do
+    begin
+      case (nIdx mod 3) of
+        0:
+          begin
+            Canvas.TextOut(nX, nY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Inc(nX, nWidth);
+          end;
+        1:
+          begin
+            nRubyX := nX;
+            Canvas.TextOut(nX, nY, ssString[nIdx]);
+            nWidth := Canvas.TextWidth(ssString[nIdx]);
+            Inc(nX, nWidth);
+          end;
+        2:
+          begin
+            Canvas.Font.Height := nFontHeight div 2;
+            Canvas.TextOut(nRubyX, nRubyY, ssString[nIdx]);
+            Canvas.Font.Height := nFontHeight;
+          end;
+      end;
+    end;
+  finally
+    FreeAndNil(ssString);
+  end;
+end;
+
+
+// 計算尺を出力する
 procedure CreateSlideRule(Canvas: TCanvas; nWidth: Integer; bDebug: Boolean);
 var
   nIdx: Integer;
@@ -116,12 +166,12 @@ begin
   Canvas.Pen.Width := 1;
 
   // 本体右上計算尺名
-  sStr := APPLICATION_NAME;
+  sStr := '|九|く||九|く| |計|けい||算|さん||尺|じゃく';
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(9200 * rUnit) - Canvas.TextWidth(sStr), round(700 * rUnit), sStr);
+  RubyTextOut(Canvas, round(8500 * rUnit), round(700 * rUnit), sStr);
 
   Canvas.Font.Color := clBlack;
-  Canvas.TextOut(round(800 * rUnit), round(1250 * rUnit), '答え');
+  RubyTextOut(Canvas, round(800 * rUnit), round(1250 * rUnit), '|答|こた|え');
 
   // 左上の「▼ かけられるかず」
   nX := nXBase;
@@ -140,12 +190,13 @@ begin
   Canvas.Pen.Color := clBlack;
   Canvas.Brush.Color := clWhite;
   Canvas.Brush.Style := bsClear;
-  sStr := 'かけられる数';
-  Canvas.TextOut(nX - round(25 * rUnit), round(760 * rUnit), sStr);
+  sStr := 'かけられる|数|かず';
+  RubyTextOut(Canvas, nX - round(25 * rUnit), round(760 * rUnit), sStr);
 
   // かける数
   Canvas.Font.Color := cluBlue;
-  Canvas.TextOut(round(800 * rUnit), round(1800 * rUnit), 'かける数');
+  RubyTextOut(Canvas, round(800 * rUnit), round(1800 * rUnit), 'かける|数|かず');
+
   Canvas.Pen.Color := clBlack;
   Canvas.Pen.Width := 1;
   nIdx := 1;
