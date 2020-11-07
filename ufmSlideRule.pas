@@ -400,6 +400,7 @@ end;
 procedure TfrmSlideRule.FormResize(Sender: TObject);
 var
   Rect: TRect;
+  nWidth: Integer;
 begin
   Rect.Left := 0;
   Rect.Top := 0;
@@ -408,9 +409,14 @@ begin
   Image1.Picture.Bitmap.Width := Image1.Width;
   Image1.Picture.Bitmap.Height := Image1.Height;
 
+  if ((Image1.Height / Image1.Width) < 0.68) then
+    nWidth := round(Image1.Height / 0.68)
+  else
+    nWidth := Image1.Width;
+
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Rect);
-  CreateSlideRule(Image1.Canvas, Image1.Width, False);
+  CreateSlideRule(Image1.Canvas, nWidth, False);
 //  Repaint;
 end;
 
