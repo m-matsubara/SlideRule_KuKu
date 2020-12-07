@@ -1,4 +1,4 @@
-program slide_rule;
+program SildeRule_KuKu;
 
 uses
   Forms,
