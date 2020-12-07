@@ -38,10 +38,13 @@ type
     btPrintOut: TButton;
     Image1: TImage;
     PrinterSetupDialog1: TPrinterSetupDialog;
+    btPdf: TButton;
+    FileSaveDialog1: TFileSaveDialog;
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btPrintOutClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure btPdfClick(Sender: TObject);
   private
     { Private 宣言 }
   public
@@ -385,9 +388,37 @@ end;
 procedure TfrmSlideRule.FormCreate(Sender: TObject);
 begin
   Self.Caption := APPLICATION_NAME + ' (' + IntToStr(Canvas.Font.PixelsPerInch) + 'dpi) ' + VERSION + ' ' + COPYRIGHT;
+  btPdf.Enabled := (Printer.Printers.IndexOf('Microsoft Print to PDF') >= 0);
 
   Image1.Align := alClient;
   FormResize(Sender);
+end;
+
+procedure TfrmSlideRule.btPdfClick(Sender: TObject);
+var
+  nIdx: Integer;
+  cxDeviceName, cxDriverName, cxPortName: array[0..MAX_PATH - 1] of Char;
+  hDeviceMode: THandle;
+  sPdfFileName: String;
+begin
+  nIdx := Printer.Printers.IndexOf('Microsoft Print to PDF');
+  if (nIdx < 0) then
+    raise Exception.Create('"Microsoft Print to PDF" not found.');
+  Printer.PrinterIndex := nIdx;
+  Printer.Orientation := poLandscape;
+
+  FileSaveDialog1.DefaultFolder := ExtractFilePath(Application.ExeName);
+  FileSaveDialog1.FileName := 'SlideRule_KuKu.pdf';
+
+  if (FileSaveDialog1.execute) then
+  begin
+    Printer.GetPrinter(cxDeviceName, cxDriverName, cxPortName, hDeviceMode);
+    Printer.SetPrinter(cxDeviceName, cxDriverName, PChar(FileSaveDialog1.FileName), 0);
+
+    Printer.BeginDoc;
+    CreateSlideRule(Printer.Canvas, Printer.PageWidth, False);
+    Printer.EndDoc;
+  end;
 end;
 
 procedure TfrmSlideRule.btPrintOutClick(Sender: TObject);

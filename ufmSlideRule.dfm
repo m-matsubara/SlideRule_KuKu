@@ -31,16 +31,42 @@ object frmSlideRule: TfrmSlideRule
     TabOrder = 0
     object btPrintOut: TButton
       Left = 16
-      Top = 8
+      Top = 9
       Width = 75
       Height = 25
       Caption = #21360#21047'...'
       TabOrder = 0
       OnClick = btPrintOutClick
     end
+    object btPdf: TButton
+      Left = 97
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = 'PDF'#20986#21147'...'
+      TabOrder = 1
+      OnClick = btPdfClick
+    end
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 32
+    Top = 48
+  end
+  object FileSaveDialog1: TFileSaveDialog
+    DefaultExtension = 'pdf'
+    FavoriteLinks = <>
+    FileTypes = <
+      item
+        DisplayName = 'PDF'#12501#12449#12452#12523
+        FileMask = '*.pdf'
+      end
+      item
+        DisplayName = #12377#12409#12390#12398#12501#12449#12452#12523
+        FileMask = '*'
+      end>
+    Options = []
+    Title = 'PDF'#12501#12449#12452#12523#20986#21147
+    Left = 120
     Top = 48
   end
 end
